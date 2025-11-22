@@ -9,100 +9,111 @@ generator client {
 }
 
 model TechHead {
-  id String @id @default(uuid())
-  name String
-  email String @unique
-  password String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                 String      @id @default(uuid())
+  name               String
+  email              String      @unique
+  password           String
+  verifiedPresidents President[] @relation("TechHeadVerifiesPresident")
+  verifiedCabinets   cabinet[]   @relation("TechHeadVerifiesCabinet")
+  verifiedMembers    Member[]    @relation("TechHeadVerifiesMember")
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
 }
 
 model President {
-  id String @id @default(uuid())
-  name String
-  email String @unique
-  password String
-  isVerified Boolean @default(false)
-  anonymousMessages AnonymousMessage[] @relation("messageToPresident")
-  anonymousFeedbacks AnonymousFeedback[] @relation("feedbackFromPresident")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                   String              @id @default(uuid())
+  name                 String
+  email                String              @unique
+  password             String
+  isVerified           Boolean             @default(false)
+  verifiedByTechHeadId String?
+  verifiedByTechHead   TechHead?           @relation("TechHeadVerifiesPresident", fields: [verifiedByTechHeadId], references: [id])
+  anonymousMessages    AnonymousMessage[]  @relation("messageToPresident")
+  anonymousFeedbacks   AnonymousFeedback[] @relation("feedbackFromPresident")
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
 }
-model Session{
-  id String @id @default(uuid())
-  sessionDate DateTime
-  motiontype String
-  Chair String
-  Attendant String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
+model Session {
+  id          String   @id @default(uuid())
+  sessionDate DateTime
+  motiontype  String
+  Chair       String
+  Attendant   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
+
 model cabinet {
-  id String @id @default(uuid())
-  name String
-  position String
-  email String @unique
-  password String
-  isVerified Boolean @default(false)
-  tasks task[] @relation("assignedTo")
-  anonymousMessages AnonymousMessage[] @relation("messageToPresidentFromCabinet")
-  anonymousFeedbacks AnonymousFeedback[] @relation("feedbackFromCabinet")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                   String              @id @default(uuid())
+  name                 String
+  position             String
+  email                String              @unique
+  password             String
+  isVerified           Boolean             @default(false)
+  verifiedByTechHeadId String?
+  verifiedByTechHead   TechHead?           @relation("TechHeadVerifiesCabinet", fields: [verifiedByTechHeadId], references: [id])
+  tasks                task[]              @relation("assignedTo")
+  anonymousMessages    AnonymousMessage[]  @relation("messageToPresidentFromCabinet")
+  anonymousFeedbacks   AnonymousFeedback[] @relation("feedbackFromCabinet")
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
 }
 
 model task {
-  id String @id @default(uuid())
-  name String
-  description String
-  deadline DateTime
-  assignedToId String?
-  assignedTo cabinet? @relation("assignedTo", fields: [assignedToId], references: [id])
+  id                 String   @id @default(uuid())
+  name               String
+  description        String
+  deadline           DateTime
+  assignedToId       String?
+  assignedTo         cabinet? @relation("assignedTo", fields: [assignedToId], references: [id])
   assignedToMemberId String?
-  assignedToMember Member? @relation("assignedToMember", fields: [assignedToMemberId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  assignedToMember   Member?  @relation("assignedToMember", fields: [assignedToMemberId], references: [id])
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 }
 
 model Member {
-  id String @id @default(uuid())
-  name String
-  email String @unique
-  password String
-  isVerified Boolean @default(false)
-  tasks task[] @relation("assignedToMember")
-  anonymousMessages AnonymousMessage[] @relation("messageFromMember")
-  anonymousFeedbacks AnonymousFeedback[] @relation("feedbackToMember")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                   String              @id @default(uuid())
+  name                 String
+  email                String              @unique
+  password             String
+  isVerified           Boolean             @default(false)
+  verifiedByTechHeadId String?
+  verifiedByTechHead   TechHead?           @relation("TechHeadVerifiesMember", fields: [verifiedByTechHeadId], references: [id])
+  tasks                task[]              @relation("assignedToMember")
+  anonymousMessages    AnonymousMessage[]  @relation("messageFromMember")
+  anonymousFeedbacks   AnonymousFeedback[] @relation("feedbackToMember")
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
 }
+
 model AnonymousMessage {
-  id String @id @default(uuid())
-  message String
-  presidentId String
-  president President @relation("messageToPresident", fields: [presidentId], references: [id])
-  senderType String // "Member" or "cabinet"
-  senderMemberId String?
-  senderMember Member? @relation("messageFromMember", fields: [senderMemberId], references: [id])
+  id              String    @id @default(uuid())
+  message         String
+  presidentId     String
+  president       President @relation("messageToPresident", fields: [presidentId], references: [id])
+  senderType      String // "Member" or "cabinet"
+  senderMemberId  String?
+  senderMember    Member?   @relation("messageFromMember", fields: [senderMemberId], references: [id])
   senderCabinetId String?
-  senderCabinet cabinet? @relation("messageToPresidentFromCabinet", fields: [senderCabinetId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  senderCabinet   cabinet?  @relation("messageToPresidentFromCabinet", fields: [senderCabinetId], references: [id])
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 }
 
 model AnonymousFeedback {
-  id String @id @default(uuid())
-  feedback String
-  memberId String
-  member Member @relation("feedbackToMember", fields: [memberId], references: [id])
-  senderType String // "cabinet" or "President"
-  senderCabinetId String?
-  senderCabinet cabinet? @relation("feedbackFromCabinet", fields: [senderCabinetId], references: [id])
+  id                String     @id @default(uuid())
+  feedback          String
+  memberId          String
+  member            Member     @relation("feedbackToMember", fields: [memberId], references: [id])
+  senderType        String // "cabinet" or "President"
+  senderCabinetId   String?
+  senderCabinet     cabinet?   @relation("feedbackFromCabinet", fields: [senderCabinetId], references: [id])
   senderPresidentId String?
-  senderPresident President? @relation("feedbackFromPresident", fields: [senderPresidentId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  senderPresident   President? @relation("feedbackFromPresident", fields: [senderPresidentId], references: [id])
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
 }
 
 datasource db {
