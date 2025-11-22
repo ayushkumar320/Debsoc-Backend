@@ -8,6 +8,69 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model TechHead {
+  id String @id @default(uuid())
+  name String
+  email String @unique
+  password String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model President {
+  id String @id @default(uuid())
+  name String
+  email String @unique
+  password String
+  isVerified Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model Session{
+  id String @id @default(uuid())
+  sessionDate DateTime
+  motiontype String
+  Chair String
+  Attendant String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+model cabinet {
+  id String @id @default(uuid())
+  name String
+  position String
+  email String @unique
+  password String
+  isVerified Boolean @default(false)
+  tasks task[] @relation("assignedTo")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model task {
+  id String @id @default(uuid())
+  name String
+  description String
+  deadline DateTime
+  assignedToId String?
+  assignedTo cabinet? @relation("assignedTo", fields: [assignedToId], references: [id])
+  assignedToMemberId String?
+  assignedToMember Member? @relation("assignedToMember", fields: [assignedToMemberId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Member {
+  id String @id @default(uuid())
+  name String
+  email String @unique
+  password String
+  isVerified Boolean @default(false)
+  tasks task[] @relation("assignedToMember")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 datasource db {
   provider = "postgresql"
 }
