@@ -1,9 +1,17 @@
 import {JwtPayload} from 'jsonwebtoken';
 
+export type Role = 'TechHead' | 'President' | 'Cabinet' | 'Member';
+
+export interface UserPayload extends JwtPayload {
+  id: string;
+  email: string;
+  role: Role;
+}
+
 declare global {
   namespace Express {
     interface Request {
-      user?: string | JwtPayload;
+      user?: UserPayload;
     }
   }
 }
