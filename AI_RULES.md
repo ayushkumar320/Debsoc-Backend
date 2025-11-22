@@ -19,6 +19,7 @@ This document establishes the strict standards for all AI-generated code in this
 ## 3. Database & Schema Synchronization
 
 - **Schema as Source of Truth**: Always consult `src/prisma/schema.prisma` before writing any database query.
+- **Role & Responsibility Awareness**: actively read `src/prisma/schema.prisma` to understand the specific roles, permissions, and relationships of `TechHead`, `President`, `cabinet`, and `Member`. Ensure your code logic aligns strictly with the schema definitions.
 - **Schema Updates**:
   - If a feature requires a schema change, **STOP** and propose the schema change first.
   - Upon schema modification:
