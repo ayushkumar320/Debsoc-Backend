@@ -8,6 +8,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
+datasource db {
+  provider = "postgresql"
+}
+
 model TechHead {
   id                 String      @id @default(uuid())
   name               String
@@ -126,8 +130,4 @@ model AnonymousFeedback {
   senderPresident   President? @relation("feedbackFromPresident", fields: [senderPresidentId], references: [id])
   createdAt         DateTime   @default(now())
   updatedAt         DateTime   @updatedAt
-}
-
-datasource db {
-  provider = "postgresql"
 }
