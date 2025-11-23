@@ -1,12 +1,12 @@
-import { Router } from 'express';
+import {Router} from 'express';
 import {
-    loginTechHead,
-    verifyPresident,
-    verifyCabinet,
-    verifyMember,
-    getUnverifiedUsers,
+  loginTechHead,
+  verifyPresident,
+  verifyCabinet,
+  verifyMember,
+  getUnverifiedUsers,
 } from '../controllers/techHead.controller.js';
-import { authMiddleware, authorizeRoles } from '../middleware/auth.middleware.js';
+import {authMiddleware, authorizeRoles} from '../middleware/auth.middleware.js';
 
 const router = Router();
 
@@ -20,4 +20,3 @@ router.post('/verify/member', authMiddleware, authorizeRoles(['TechHead']), veri
 router.get('/unverified-users', authMiddleware, authorizeRoles(['TechHead']), getUnverifiedUsers);
 
 export default router;
-
